@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur {{ app_name }} - Vos identifiants de connexion</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #2c3e50; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); padding: 40px 30px; text-align: center; color: white; }
+        .header h1 { font-size: 2.5em; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .header .tagline { font-size: 1.1em; opacity: 0.9; font-weight: 300; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 1.4em; color: #2c3e50; margin-bottom: 20px; font-weight: 600; }
+        .message { font-size: 1.1em; color: #34495e; margin-bottom: 30px; line-height: 1.7; }
+        .credentials-container { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 15px; padding: 25px; margin: 30px 0; }
+        .credentials-title { font-size: 1.2em; color: #27ae60; font-weight: 600; margin-bottom: 20px; text-align: center; }
+        .credential-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px; background: white; border-radius: 8px; border-left: 4px solid #27ae60; }
+        .credential-label { font-weight: 600; color: #2c3e50; min-width: 120px; }
+        .credential-value { font-family: 'Courier New', monospace; background: #f1f3f4; padding: 8px 12px; border-radius: 6px; color: #e74c3c; font-weight: 600; font-size: 0.95em; word-break: break-all; }
+        .login-button-container { text-align: center; margin: 35px 0; }
+        .login-button { display: inline-block; padding: 18px 36px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 1.1em; font-weight: 600; box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4); transition: all 0.3s ease; }
+        .login-button:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(39, 174, 96, 0.6); }
+        .security-notice { background: #d1ecf1; border: 1px solid #bee5eb; padding: 20px; border-radius: 12px; margin: 25px 0; }
+        .security-notice strong { color: #0c5460; }
+        .warning { background: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 12px; margin: 25px 0; }
+        .warning strong { color: #721c24; }
+        .footer { text-align: center; padding: 30px; background: #f8f9fa; color: #7f8c8d; font-size: 0.9em; }
+        .footer p { margin-bottom: 8px; }
+        .social-links { margin-top: 20px; }
+        .social-links a { display: inline-block; margin: 0 10px; color: #27ae60; text-decoration: none; }
+        @media (max-width: 600px) {
+            .container { margin: 10px; border-radius: 15px; }
+            .header { padding: 30px 20px; }
+            .header h1 { font-size: 2em; }
+            .content { padding: 30px 20px; }
+            .login-button { padding: 16px 28px; font-size: 1em; }
+            .credential-row { flex-direction: column; align-items: flex-start; }
+            .credential-label { margin-bottom: 8px; min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ app_name }}</h1>
+            <div class="tagline">Service d'authentification sécurisé</div>
+        </div>
+        <div class="content">
+            <div class="greeting">Bienvenue {{ username }}!</div>
+            <div class="message">
+                Félicitations! Votre compte sur <strong>{{ app_name }}</strong> a été créé avec succès. 
+                Voici vos identifiants de connexion pour accéder à votre compte.
+            </div>
+            
+            <div class="credentials-container">
+                <div class="credentials-title">🔐 Vos identifiants de connexion</div>
+                <div class="credential-row">
+                    <span class="credential-label">Nom d'utilisateur:</span>
+                    <span class="credential-value">{{ username }}</span>
+                </div>
+                <div class="credential-row">
+                    <span class="credential-label">Adresse e-mail:</span>
+                    <span class="credential-value">{{ email }}</span>
+                </div>
+                <div class="credential-row">
+                    <span class="credential-label">Mot de passe:</span>
+                    <span class="credential-value">{{ password }}</span>
+                </div>
+            </div>
+            
+            <div class="login-button-container">
+                <a href="{{ login_url }}" class="login-button">Se connecter maintenant</a>
+            </div>
+            
+            <div class="security-notice">
+                <strong>Conseils de sécurité :</strong> 
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Conservez vos identifiants en lieu sûr</li>
+                    <li>Ne partagez jamais votre mot de passe</li>
+                    <li>Changez votre mot de passe après votre première connexion</li>
+                    <li>Activez l'authentification à deux facteurs si disponible</li>
+                </ul>
+            </div>
+            
+            <div class="warning">
+                <strong>Important :</strong> 
+                Cet e-mail contient des informations sensibles. Veuillez ne pas le partager avec quiconque 
+                et le supprimer après avoir noté vos identifiants en lieu sûr.
+            </div>
+        </div>
+        <div class="footer">
+            <p><strong>{{ app_name }}</strong> - Service d'authentification sécurisé</p>
+            <p>Ceci est un e-mail automatisé, veuillez ne pas répondre directement à ce message.</p>
+            <p>Pour obtenir de l'aide, veuillez contacter notre équipe de service client.</p>
+            <div class="social-links">
+                <a href="#">Site web</a> • <a href="#">Support</a> • <a href="#">Sécurité</a>
+            </div>
+            <p style="margin-top: 20px; font-size: 0.8em; color: #95a5a6;">&copy; 2024 {{ app_name }}. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html> 
