@@ -140,7 +140,7 @@ class EmailService:
                         port=settings.mail_port)
             return False
     
-        @staticmethod
+    @staticmethod
     async def send_password_reset(
         to_email: str,
         username: str,

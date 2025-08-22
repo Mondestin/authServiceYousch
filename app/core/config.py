@@ -47,17 +47,20 @@ class Settings(BaseSettings):
     notification_service_url: Optional[str] = Field(default=None, env="NOTIFICATION_SERVICE_URL")
     
     # Email Settings - Support both naming conventions
+    mail_driver: str = Field(default="smtp", env="MAIL_DRIVER")
     mail_host: str = Field(default="fleetpay.phoenone.com", env="MAIL_HOST")
     mail_port: int = Field(default=465, env="MAIL_PORT")
     mail_username: str = Field(default="noreply@fleetpay.phoenone.com", env="MAIL_USERNAME")
     mail_password: str = Field(default="", env="MAIL_PASSWORD")
+    mail_encryption: str = Field(default="ssl", env="MAIL_ENCRYPTION")
     mail_use_tls: bool = Field(default=False, env="MAIL_USE_TLS")
     mail_use_ssl: bool = Field(default=True, env="MAIL_USE_SSL")
-    mail_from_name: str = Field(default="FleetPay", env="MAIL_FROM_NAME")
+    mail_from_name: str = Field(default="Yousch", env="MAIL_FROM_NAME")
     mail_from_address: str = Field(default="noreply@fleetpay.phoenone.com", env="MAIL_FROM_ADDRESS")
     mail_verification_url: str = Field(default="http://localhost:3000/verify-email", env="MAIL_VERIFICATION_URL")
     mail_password_reset_url: str = Field(default="http://localhost:3000/reset-password", env="MAIL_PASSWORD_RESET_URL")
     mail_login_url: str = Field(default="http://localhost:3000/login", env="MAIL_LOGIN_URL")
+    mail_to_admin: Optional[str] = Field(default="sydneymondestin@gmail.com", env="MAIL_TO_ADMIN")
     
 
     
@@ -85,6 +88,24 @@ class Settings(BaseSettings):
         if v.upper() not in allowed_levels:
             raise ValueError(f"LOG_LEVEL must be one of {allowed_levels}")
         return v.upper()
+    
+    @field_validator("mail_use_tls")
+    @classmethod
+    def validate_mail_use_tls(cls, v, info):
+        """Set mail_use_tls based on encryption type"""
+        if hasattr(info, 'data') and info.data:
+            encryption = info.data.get("mail_encryption", "ssl")
+            return encryption in ["tls", "ssl"]
+        return v
+    
+    @field_validator("mail_use_ssl")
+    @classmethod
+    def validate_mail_use_ssl(cls, v, info):
+        """Set mail_use_ssl based on encryption type"""
+        if hasattr(info, 'data') and info.data:
+            encryption = info.data.get("mail_encryption", "ssl")
+            return encryption in ["tls", "ssl"]
+        return v
     
 
     
