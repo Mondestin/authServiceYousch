@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Comprehensive test runner for AuthService
+Comprehensive test runner for authGhost API
 Runs all tests with various configurations and generates reports
 """
 
@@ -323,7 +323,7 @@ def create_test_summary(results):
 
 def main():
     """Main function"""
-    parser = argparse.ArgumentParser(description="Run AuthService tests")
+    parser = argparse.ArgumentParser(description="Run authGhost API tests")
     parser.add_argument("--test-type", choices=["unit", "api", "integration", "security", "performance", "all"], 
                        default="all", help="Type of tests to run")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose output")
@@ -335,7 +335,7 @@ def main():
     
     args = parser.parse_args()
     
-    print("🚀 AuthService Test Runner")
+    print("🚀 authGhost API Test Runner")
     print(f"⏰ Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"📁 Project root: {project_root}")
     

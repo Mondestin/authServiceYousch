@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Local MySQL setup script for AuthService
+Local MySQL setup script for authGhost API
 Helps set up the database and user for local development
 """
 
@@ -35,7 +35,7 @@ def check_mysql_connection():
     return True
 
 def create_database_and_user():
-    """Create database and user for AuthService"""
+    """Create database and user for authGhost API"""
     print("\n🗄️  Setting up database and user...")
     
     # Get MySQL root password
@@ -48,7 +48,7 @@ def create_database_and_user():
     
     # Create database
     create_db_sql = """
-    CREATE DATABASE IF NOT EXISTS auth_db 
+    CREATE DATABASE IF NOT EXISTS authghost_db 
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     """
     
@@ -58,8 +58,8 @@ def create_database_and_user():
     
     # Create user
     create_user_sql = """
-    CREATE USER IF NOT EXISTS 'auth_user'@'localhost' IDENTIFIED BY 'auth_password';
-    GRANT ALL PRIVILEGES ON auth_db.* TO 'auth_user'@'localhost';
+    CREATE USER IF NOT EXISTS 'authghost_user'@'localhost' IDENTIFIED BY 'authghost_password';
+    GRANT ALL PRIVILEGES ON authghost_db.* TO 'authghost_user'@'localhost';
     FLUSH PRIVILEGES;
     """
     

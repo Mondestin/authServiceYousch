@@ -1,7 +1,8 @@
 """
-Token schemas for the AuthService
+Token schemas for authGhost API
 """
 
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 
@@ -15,7 +16,7 @@ class RevokedTokenResponse(BaseModel):
     id: int = Field(..., description="Revoked token record ID")
     token_id: str = Field(..., description="JWT token ID")
     user_id: int = Field(..., description="User ID who owned the token")
-    revoked_at: str = Field(..., description="Revocation timestamp")
+    revoked_at: datetime = Field(..., description="Revocation timestamp")
     
     class Config:
         from_attributes = True

@@ -27,10 +27,10 @@ def main():
         
         logger.info("✅ Database seeded successfully!")
         logger.info("Initial data includes:")
-        logger.info("- Default permissions")
-        logger.info("- Default school")
-        logger.info("- Default roles (Super Admin, School Admin, Teacher, Student)")
-        logger.info("- Super admin user (admin@default-school.com / admin123)")
+        logger.info("- Default organization")
+        logger.info("- Default service (auth-service)")
+        logger.info("- Default roles (super_admin, org_admin, service_admin)")
+        logger.info("- Super admin user (admin@default-org.com / admin123)")
         logger.info("\nYou can now start the application:")
         logger.info("uvicorn app.main:app --reload")
         

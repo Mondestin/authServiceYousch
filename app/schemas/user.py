@@ -1,7 +1,8 @@
 """
-User schemas for the AuthService
+User schemas for authGhost API
 """
 
+from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, Field, EmailStr
 
@@ -19,9 +20,9 @@ class UserResponse(BaseModel):
     org_id: int = Field(..., description="Organization ID")
     email: str = Field(..., description="User's email address")
     is_active: bool = Field(..., description="Whether user is active")
-    created_at: str = Field(..., description="Creation timestamp")
-    updated_at: str = Field(..., description="Last update timestamp")
-    last_login: Optional[str] = Field(None, description="Last login timestamp")
+    created_at: datetime = Field(..., description="Creation timestamp")
+    updated_at: datetime = Field(..., description="Last update timestamp")
+    last_login: Optional[datetime] = Field(None, description="Last login timestamp")
     
     class Config:
         from_attributes = True

@@ -1,8 +1,8 @@
 """
-Organization subscription schemas for the AuthService
+Organization subscription schemas for authGhost API
 """
 
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 from pydantic import BaseModel, Field
 
@@ -33,7 +33,7 @@ class OrganizationSubscriptionUpdate(BaseModel):
 class OrganizationSubscriptionResponse(OrganizationSubscriptionBase):
     """Schema for organization subscription response"""
     id: int = Field(..., description="Organization subscription ID")
-    created_at: str = Field(..., description="Creation timestamp")
+    created_at: datetime = Field(..., description="Creation timestamp")
     
     class Config:
         from_attributes = True

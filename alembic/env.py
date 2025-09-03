@@ -1,13 +1,11 @@
 """
-Alembic environment configuration for the AuthService
+Alembic environment configuration for authGhost API
 Handles database migrations and schema management
 """
 
-import asyncio
 from logging.config import fileConfig
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
@@ -45,7 +43,11 @@ target_metadata = Base.metadata
 def get_url():
     """Get database URL from settings"""
     settings = get_settings()
-    return settings.database_url
+    # Ensure PyMySQL driver is used for MySQL URLs
+    url = settings.database_url
+    if url.startswith("mysql://") and "pymysql" not in url:
+        url = url.replace("mysql://", "mysql+pymysql://", 1)
+    return url
 
 
 def run_migrations_offline() -> None:
@@ -80,20 +82,6 @@ def do_run_migrations(connection: Connection) -> None:
         context.run_migrations()
 
 
-async def run_async_migrations() -> None:
-    """Run migrations in async mode"""
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
-
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
-
-    await connectable.dispose()
-
-
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
 
@@ -101,8 +89,19 @@ def run_migrations_online() -> None:
     and associate it with the Alembic Context.
 
     """
-    # Handle async migrations
-    asyncio.run(run_async_migrations())
+    # Get database URL from settings
+    url = get_url()
+    
+    # Create engine from config
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+        url=url,  # Override URL from settings
+    )
+
+    with connectable.connect() as connection:
+        do_run_migrations(connection)
 
 
 if context.is_offline_mode():

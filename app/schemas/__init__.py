@@ -1,5 +1,5 @@
 """
-Schemas package for the AuthService
+Schemas package for authGhost API
 """
 
 from .auth import (
@@ -7,6 +7,7 @@ from .auth import (
     RefreshTokenRequest, UserProfileResponse, HealthCheck
 )
 from .user import UserUpdate, UserResponse as UserResponseSchema
+from .organization import OrganizationCreate, OrganizationUpdate, OrganizationResponse
 from .role import RoleCreate, RoleUpdate, RoleResponse
 from .service import ServiceCreate, ServiceUpdate, ServiceResponse
 from .subscription_tier import SubscriptionTierCreate, SubscriptionTierUpdate, SubscriptionTierResponse
@@ -22,6 +23,9 @@ __all__ = [
     
     # User schemas
     "UserUpdate", "UserResponseSchema",
+    
+    # Organization schemas
+    "OrganizationCreate", "OrganizationUpdate", "OrganizationResponse",
     
     # Role schemas
     "RoleCreate", "RoleUpdate", "RoleResponse",

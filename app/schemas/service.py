@@ -1,7 +1,8 @@
 """
-Service schemas for the AuthService
+Service schemas for authGhost API
 """
 
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, Field
 from enum import Enum
@@ -35,7 +36,7 @@ class ServiceUpdate(BaseModel):
 class ServiceResponse(ServiceBase):
     """Schema for service response"""
     id: int = Field(..., description="Service ID")
-    created_at: str = Field(..., description="Creation timestamp")
+    created_at: datetime = Field(..., description="Creation timestamp")
     
     class Config:
         from_attributes = True

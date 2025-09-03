@@ -1,9 +1,11 @@
 """
-Subscription tier schemas for the AuthService
+Subscription tier schemas for authGhost API
 """
 
-from typing import Dict, Any
-from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import Dict, Any, Union
+from pydantic import BaseModel, Field, field_validator
+import json
 
 
 class SubscriptionTierBase(BaseModel):
@@ -27,7 +29,18 @@ class SubscriptionTierUpdate(BaseModel):
 class SubscriptionTierResponse(SubscriptionTierBase):
     """Schema for subscription tier response"""
     id: int = Field(..., description="Subscription tier ID")
-    created_at: str = Field(..., description="Creation timestamp")
+    created_at: datetime = Field(..., description="Creation timestamp")
+    
+    @field_validator('features', mode='before')
+    @classmethod
+    def parse_features(cls, v):
+        """Parse features field - handle both JSON strings and dictionaries"""
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                return v
+        return v
     
     class Config:
         from_attributes = True

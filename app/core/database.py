@@ -363,51 +363,59 @@ def seed_database() -> None:
 
 
 def init_database() -> None:
-    """Initialize database tables"""
+    """Initialize database using Alembic migrations"""
     try:
-        # Check if our specific tables already exist
-        inspector = inspect(engine)
-        existing_tables = inspector.get_table_names()
+        import subprocess
+        import os
+        from pathlib import Path
         
-        logger.info(f"Found existing tables: {existing_tables}")
+        logger.info("Initializing database with Alembic migrations...")
         
-        # Check for our specific tables
-        required_tables = {'users', 'organizations', 'services', 'roles', 'user_roles', 'subscription_tiers', 'organization_subscriptions', 'revoked_tokens'}
+        # Get project root directory
+        project_root = Path(__file__).parent.parent.parent
         
-        # Check if all required tables exist
-        if required_tables.issubset(set(existing_tables)):
-            logger.info("Required database tables already exist, skipping initialization")
-            # Still try to seed in case it's a fresh database
-            try:
-                seed_database()
-            except Exception as e:
-                logger.warning(f"Could not seed existing database: {e}")
-            return
+        # Change to project root directory
+        original_cwd = os.getcwd()
+        os.chdir(project_root)
         
-        logger.info("Creating database tables...")
-        
-        # Import all models to ensure they're registered with Base
-        from app.models import user, organization, service, role, user_role, subscription_tier, organization_subscription, revoked_token
-        
-        # Create tables with correct schema
         try:
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database tables initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to create tables with create_all: {e}")
-            # Try creating tables individually
-            logger.info("Attempting to create tables individually...")
-            create_tables_individually()
+            # Run alembic upgrade head
+            result = subprocess.run(
+                ["alembic", "upgrade", "head"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            
+            logger.info("✅ Database migrations completed successfully!")
+            logger.debug(f"Migration output: {result.stdout}")
+            
+            if result.stderr:
+                logger.warning(f"Migration warnings: {result.stderr}")
+                
+        except subprocess.CalledProcessError as e:
+            logger.error(f"❌ Migration failed: {e}")
+            logger.error(f"Error output: {e.stderr}")
+            raise Exception(f"Database migration failed: {e.stderr}")
+        except FileNotFoundError:
+            logger.error("❌ Alembic not found. Please ensure Alembic is installed and available in PATH")
+            raise Exception("Alembic not found")
+        finally:
+            # Restore original working directory
+            os.chdir(original_cwd)
         
         # Verify tables were created successfully
         logger.info("Verifying table creation...")
         inspector = inspect(engine)
         existing_tables = inspector.get_table_names()
+        
+        # Check for our specific tables
+        required_tables = {'users', 'organizations', 'services', 'roles', 'user_roles', 'subscription_tiers', 'organization_subscriptions', 'revoked_tokens'}
         missing_tables = required_tables - set(existing_tables)
         
         if missing_tables:
-            logger.error(f"Failed to create tables: {missing_tables}")
-            raise Exception(f"Tables not created: {missing_tables}")
+            logger.error(f"Missing tables after migration: {missing_tables}")
+            raise Exception(f"Tables not created by migration: {missing_tables}")
         
         logger.info("All required tables created successfully!")
         
@@ -417,34 +425,35 @@ def init_database() -> None:
                 # Verify users table schema
                 result = connection.execute(text("""
                     SELECT data_type 
-                    FROM information_schema.columns 
+                    FROM information_schema.columns
                     WHERE table_name = 'users' AND column_name = 'id'
                 """))
                 column_info = result.fetchone()
                 logger.info(f"Verified users.id column type: {column_info[0] if column_info else 'unknown'}")
                 
-                # Verify sessions table schema
+                # Verify organizations table schema
                 result = connection.execute(text("""
                     SELECT data_type 
                     FROM information_schema.columns 
-                    WHERE table_name = 'sessions' AND column_name = 'user_id'
+                    WHERE table_name = 'organizations' AND column_name = 'id'
                 """))
                 column_info = result.fetchone()
-                logger.info(f"Verified sessions.user_id column type: {column_info[0] if column_info else 'unknown'}")
+                logger.info(f"Verified organizations.id column type: {column_info[0] if column_info else 'unknown'}")
                 
         except Exception as e:
             logger.warning(f"Could not verify created table schemas: {e}")
         
-        # Tables are now created, but don't seed yet
-        logger.info("Database tables created successfully. Seeding will be done separately.")
+        # Tables are now created via migrations, seeding is handled by migration 002
+        logger.info("Database tables created successfully via migrations!")
             
     except Exception as e:
         logger.error("Failed to initialize database tables", error=str(e))
         raise
 
 
-def create_tables_individually() -> None:
-    """Create tables individually using raw SQL for MySQL compatibility"""
+# Note: create_tables_individually() function removed - now using Alembic migrations
+def _obsolete_create_tables_individually() -> None:
+    """OBSOLETE: Create tables individually using raw SQL for MySQL compatibility"""
     try:
         logger.info("Creating tables individually with MySQL-compatible SQL...")
         
