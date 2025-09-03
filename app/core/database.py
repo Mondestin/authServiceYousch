@@ -256,18 +256,19 @@ SessionLocal = create_database_session_factory(engine)
 def seed_database() -> None:
     """Seed database with initial data"""
     try:
-        from app.models.school import School
-        from app.models.role import Role, Permission
+        from app.models.organization import Organization
+        from app.models.service import Service
+        from app.models.role import Role
         from app.models.user import User
         from app.core.security import get_password_hash
         
         # Check if data already exists
         try:
             with engine.connect() as connection:
-                result = connection.execute(text("SELECT COUNT(*) FROM schools"))
-                school_count = result.scalar()
+                result = connection.execute(text("SELECT COUNT(*) FROM organizations"))
+                org_count = result.scalar()
                 
-                if school_count > 0:
+                if org_count > 0:
                     logger.info("Database already has data, skipping seeding")
                     return
         except Exception as e:
@@ -276,101 +277,73 @@ def seed_database() -> None:
         
         logger.info("Seeding database with initial data...")
         
-        # Create default permissions
-        default_permissions = [
-            Permission(name="user.create", description="Create new users"),
-            Permission(name="user.read", description="Read user information"),
-            Permission(name="user.update", description="Update user information"),
-            Permission(name="user.delete", description="Delete users"),
-            Permission(name="school.create", description="Create new schools"),
-            Permission(name="school.read", description="Read school information"),
-            Permission(name="school.update", description="Update school information"),
-            Permission(name="school.delete", description="Delete schools"),
-            Permission(name="role.create", description="Create new roles"),
-            Permission(name="role.read", description="Read role information"),
-            Permission(name="role.update", description="Update role information"),
-            Permission(name="role.delete", description="Delete roles"),
-        ]
+        # Create default organization
+        default_organization = Organization(
+            name="Default Organization"
+        )
         
-        # Create default school
-        default_school = School(
-            name="Default School",
-            code="DEFAULT",
-            domain="https://default-school.com"
+        # Create default service
+        default_service = Service(
+            name="auth-service",
+            description="Authentication service",
+            status="active"
         )
         
         # Create default roles
         super_admin_role = Role(
-            name="Super Admin",
-            description="Global super administrator with all permissions",
-            is_default=False
+            name="super_admin",
+            service_id=1,  # Will be set after service is created
+            permissions={"all": True}
         )
         
-        school_admin_role = Role(
-            name="School Admin",
-            description="School-level administrator",
-            school_id=1,  # Will be set after school is created
-            is_default=True
+        org_admin_role = Role(
+            name="org_admin",
+            service_id=1,  # Will be set after service is created
+            permissions={"org": {"read": True, "update": True, "users": True}}
         )
         
-        teacher_role = Role(
-            name="Teacher",
-            description="Teacher role for campus-level access",
-            school_id=1,  # Will be set after school is created
-            is_default=True
-        )
-        
-        student_role = Role(
-            name="Student",
-            description="Student role for basic access",
-            school_id=1,  # Will be set after school is created
-            is_default=True
+        service_admin_role = Role(
+            name="service_admin",
+            service_id=1,  # Will be set after service is created
+            permissions={"service": {"read": True, "update": True, "roles": True}}
         )
         
         # Create default super admin user
         super_admin_user = User(
-            school_id=1,  # Will be set after school is created
-            role_id=1,    # Will be set after role is created
-            email="admin@default-school.com",
-            username="superadmin",
-            hashed_password=get_password_hash("admin123"),
-            first_name="Super",
-            last_name="Admin",
-            is_active=True,
-            is_verified=True
+            org_id=1,  # Will be set after organization is created
+            email="admin@default-org.com",
+            password_hash=get_password_hash("admin123")
         )
         
         # Add all objects to session
         with SessionLocal() as db:
             try:
-                # Add permissions
-                for permission in default_permissions:
-                    db.add(permission)
+                # Add organization
+                db.add(default_organization)
                 db.commit()
-                logger.info("Added default permissions")
+                db.refresh(default_organization)
+                logger.info(f"Added default organization: {default_organization.name}")
                 
-                # Add school
-                db.add(default_school)
+                # Add service
+                db.add(default_service)
                 db.commit()
-                db.refresh(default_school)
-                logger.info(f"Added default school: {default_school.name}")
+                db.refresh(default_service)
+                logger.info(f"Added default service: {default_service.name}")
                 
-                # Update role school_id references
-                school_admin_role.school_id = default_school.id
-                teacher_role.school_id = default_school.id
-                student_role.school_id = default_school.id
+                # Update role service_id references
+                super_admin_role.service_id = default_service.id
+                org_admin_role.service_id = default_service.id
+                service_admin_role.service_id = default_service.id
                 
                 # Add roles
                 db.add(super_admin_role)
-                db.add(school_admin_role)
-                db.add(teacher_role)
-                db.add(student_role)
+                db.add(org_admin_role)
+                db.add(service_admin_role)
                 db.commit()
                 logger.info("Added default roles")
                 
                 # Update user references
-                super_admin_user.school_id = default_school.id
-                super_admin_user.role_id = super_admin_role.id
+                super_admin_user.org_id = default_organization.id
                 
                 # Add user
                 db.add(super_admin_user)
@@ -399,7 +372,7 @@ def init_database() -> None:
         logger.info(f"Found existing tables: {existing_tables}")
         
         # Check for our specific tables
-        required_tables = {'users', 'sessions', 'schools', 'campuses', 'roles', 'permissions', 'role_permissions', 'login_history'}
+        required_tables = {'users', 'organizations', 'services', 'roles', 'user_roles', 'subscription_tiers', 'organization_subscriptions', 'revoked_tokens'}
         
         # Check if all required tables exist
         if required_tables.issubset(set(existing_tables)):
@@ -414,7 +387,7 @@ def init_database() -> None:
         logger.info("Creating database tables...")
         
         # Import all models to ensure they're registered with Base
-        from app.models import user, school, role, audit
+        from app.models import user, organization, service, role, user_role, subscription_tier, organization_subscription, revoked_token
         
         # Create tables with correct schema
         try:

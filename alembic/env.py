@@ -12,10 +12,14 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 # Import your models here to ensure they are registered with SQLAlchemy
-from app.models.user import User, UserSession
-from app.models.school import School, Campus
-from app.models.role import Role, Permission, RolePermission
-from app.models.audit import LoginHistory
+from app.models.user import User
+from app.models.organization import Organization
+from app.models.service import Service
+from app.models.role import Role
+from app.models.user_role import UserRole
+from app.models.subscription_tier import SubscriptionTier
+from app.models.organization_subscription import OrganizationSubscription
+from app.models.revoked_token import RevokedToken
 from app.core.database import Base
 from app.core.config import get_settings
 

@@ -2,14 +2,22 @@
 Models package for the AuthService
 """
 
-from .user import User, UserSession
-from .school import School, Campus
-from .role import Role, Permission, RolePermission
-from .audit import LoginHistory
+from .user import User
+from .organization import Organization
+from .service import Service
+from .role import Role
+from .user_role import UserRole
+from .subscription_tier import SubscriptionTier
+from .organization_subscription import OrganizationSubscription
+from .revoked_token import RevokedToken
 
 __all__ = [
-    "User", "UserSession",
-    "School", "Campus", 
-    "Role", "Permission", "RolePermission",
-    "LoginHistory"
+    "User",
+    "Organization",
+    "Service",
+    "Role",
+    "UserRole",
+    "SubscriptionTier",
+    "OrganizationSubscription",
+    "RevokedToken"
 ] 

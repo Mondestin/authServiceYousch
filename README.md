@@ -1,17 +1,29 @@
-# AuthService
+# authGhost API
 
-A modern, multi-tenant authentication service built with FastAPI, SQLAlchemy, and MySQL.
+authGhost is Phoenone's centralized authentication and access management API, designed for developers building multi-service applications. Built with FastAPI, SQLAlchemy, and MySQL.
 
 ## Features
 
-- 🔐 **Multi-tenant Authentication**: Support for multiple schools/organizations
-- 🏫 **School & Campus Management**: Hierarchical organization structure
-- 👥 **Role-Based Access Control (RBAC)**: Flexible permission system
-- 🔑 **JWT Authentication**: Secure token-based authentication
-- 📊 **Comprehensive Logging**: Structured logging with JSON format
+- 🔐 **Multi-tenant Authentication**: Support for multiple organizations
+- 🏢 **Organization Management**: Multi-tenant organization structure
+- 👥 **Role-Based Access Control (RBAC)**: Service-specific roles with JSON permissions
+- 🔑 **JWT Authentication**: Secure token-based authentication with service-specific access
+- 📊 **Subscription Management**: Organization-level subscription tiers and feature access
 - 🚀 **FastAPI**: Modern, fast web framework with automatic API documentation
 - 🗄️ **MySQL Database**: Robust relational database backend
 - 🐳 **Docker Support**: Containerized deployment ready
+
+## Description
+
+authGhost provides a secure and consistent way to handle:
+
+- **User authentication and service-specific JWT token issuance**
+- **Role-based access control (RBAC) across multiple services**
+- **Organization-level subscription management and feature access**
+- **Multi-tenant support for SaaS platforms**
+- **Token refresh and optional revocation for secure session management**
+
+Developers can integrate authGhost with Laravel, Symfony, SpringBoot, ExpressJS, or any other microservices, ensuring that authentication, authorization, and subscription checks are consistent across all products. It is optimized for stateless JWT validation but also supports token introspection for revocable access.
 
 ## Tech Stack
 
