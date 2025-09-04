@@ -12,6 +12,8 @@ class UserCreate(BaseModel):
     """Schema for user registration"""
     email: EmailStr = Field(..., description="User's email address")
     password: str = Field(..., min_length=8, description="User's password")
+    first_name: Optional[str] = Field(None, max_length=100, description="User's first name")
+    last_name: Optional[str] = Field(None, max_length=100, description="User's last name")
     org_id: int = Field(..., description="Organization ID for the user")
     service_id: int = Field(..., description="Service ID for the user")
 

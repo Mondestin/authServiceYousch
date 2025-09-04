@@ -92,6 +92,12 @@ def update_user(
             )
         user.email = user_data.email
     
+    if user_data.first_name is not None:
+        user.first_name = user_data.first_name
+    
+    if user_data.last_name is not None:
+        user.last_name = user_data.last_name
+    
     if user_data.is_active is not None:
         user.is_active = user_data.is_active
     

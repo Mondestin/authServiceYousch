@@ -82,7 +82,9 @@ async def register(
         new_user = User(
             org_id=user_data.org_id,
             email=user_data.email,
-            password_hash=hashed_password
+            password_hash=hashed_password,
+            first_name=user_data.first_name,
+            last_name=user_data.last_name
         )
         
         db.add(new_user)

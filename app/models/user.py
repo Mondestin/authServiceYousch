@@ -21,6 +21,8 @@ class User(Base):
         org_id: Reference to the organization
         email: User's email address (unique)
         password_hash: Securely hashed password
+        first_name: User's first name
+        last_name: User's last name
         is_active: Whether the user account is active
         created_at: When the user account was created
         updated_at: When the user account was last updated
@@ -38,6 +40,10 @@ class User(Base):
     # Authentication fields
     email = Column(String(255), nullable=False, unique=True, index=True)
     password_hash = Column(String(255), nullable=False)
+    
+    # Personal information
+    first_name = Column(String(100), nullable=True)
+    last_name = Column(String(100), nullable=True)
     
     # Status fields
     is_active = Column(Boolean, default=True, nullable=False)
@@ -62,6 +68,8 @@ class User(Base):
             "id": self.id,
             "org_id": self.org_id,
             "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
