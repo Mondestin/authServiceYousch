@@ -22,7 +22,6 @@ class UserLogin(BaseModel):
     """Schema for user login"""
     email: EmailStr = Field(..., description="User's email address")
     password: str = Field(..., description="User's password")
-    service_id: int = Field(..., description="Service ID")
 
 
 class UserResponse(BaseModel):

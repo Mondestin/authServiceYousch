@@ -21,6 +21,7 @@ from app.core.security import (
 )
 from app.models.user import User
 from app.models.organization import Organization
+from app.models.service import Service
 from app.models.user_role import UserRole
 from app.models.role import Role
 from app.models.organization_subscription import OrganizationSubscription
@@ -50,7 +51,7 @@ async def register(
     Register a new user account
     
     Args:
-        user_data: User registration data (email, password, org_id, service_id)
+        user_data: User registration data (email, password, org_id, service_id, first_name, last_name)
         db: Database session
         
     Returns:
@@ -73,6 +74,13 @@ async def register(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Organization not found"
+        )    
+    # Verify service exists
+    service = db.query(Service).filter(Service.id == user_data.service_id).first()
+    if not service:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Service not found"
         )
     
     try:
@@ -125,7 +133,7 @@ async def login(
     Authenticate user and return access tokens
     
     Args:
-        user_credentials: User login credentials (email, password, service_id)
+        user_credentials: User login credentials (email, password)
         db: Database session
         
     Returns:
