@@ -64,7 +64,8 @@ class EmailService:
     @staticmethod
     async def send_email_verification(
         to_email: str,
-        username: str,
+        firstname: str,
+        lastname: str,
         verification_token: str,
         user_id: str
     ) -> bool:
@@ -96,7 +97,8 @@ class EmailService:
             
             # Email content
             html_content = EmailService._get_verification_email_template(
-                username=username,
+                firstname=firstname,
+                lastname=lastname,
                 verification_url=verification_url
             )
             logger.debug("Email template rendered", 
@@ -143,7 +145,8 @@ class EmailService:
     @staticmethod
     async def send_password_reset(
         to_email: str,
-        username: str,
+        firstname: str,
+        lastname: str,
         reset_token: str,
         user_id: str
     ) -> bool:
@@ -167,7 +170,8 @@ class EmailService:
             
             # Email content
             html_content = EmailService._get_password_reset_email_template(
-                username=username,
+                firstname=firstname,
+                lastname=lastname,
                 reset_url=reset_url
             )
             
@@ -197,7 +201,8 @@ class EmailService:
     @staticmethod
     async def send_welcome_email(
         to_email: str,
-        username: str,
+        firstname: str,
+        lastname: str,
         password: str,
         user_id: str
     ) -> bool:
@@ -275,7 +280,7 @@ class EmailService:
             return False
     
     @staticmethod
-    def _get_verification_email_template(username: str, verification_url: str) -> str:
+    def _get_verification_email_template(firstname: str, lastname: str, verification_url: str) -> str:
         """
         Get email verification email template
         
@@ -289,16 +294,17 @@ class EmailService:
         try:
             template = jinja_env.get_template("verification.html")
             return template.render(
-                username=username,
+                firstname=firstname,
+                lastname=lastname,
                 verification_url=verification_url,
                 app_name=settings.app_name
             )
         except Exception as e:
             logger.warning("Failed to render verification email template, using default", error=str(e))
-            return EmailService._get_default_verification_template(username, verification_url)
+            return EmailService._get_default_verification_template(firstname, lastname, verification_url)
     
     @staticmethod
-    def _get_password_reset_email_template(username: str, reset_url: str) -> str:
+    def _get_password_reset_email_template(firstname: str, lastname: str, reset_url: str) -> str:
         """
         Get password reset email template
         
@@ -312,13 +318,14 @@ class EmailService:
         try:
             template = jinja_env.get_template("password_reset.html")
             return template.render(
-                username=username,
+                firstname=firstname,
+                lastname=lastname,
                 reset_url=reset_url,
                 app_name=settings.app_name
             )
         except Exception as e:
             logger.warning("Failed to render password reset email template, using default", error=str(e))
-            return EmailService._get_default_password_reset_template(username, reset_url)
+            return EmailService._get_default_password_reset_template(firstname, lastname, reset_url)
     
     @staticmethod
     def _get_welcome_email_template(username: str, email: str, password: str, login_url: str) -> str:
@@ -348,7 +355,7 @@ class EmailService:
             return EmailService._get_default_welcome_template(username, email, password, login_url)
     
     @staticmethod
-    def _get_default_verification_template(username: str, verification_url: str) -> str:
+    def _get_default_verification_template(firstname: str, lastname: str, verification_url: str) -> str:
         """Fallback email verification template if external template fails"""
         return f"""
         <!DOCTYPE html>
@@ -357,7 +364,7 @@ class EmailService:
             <title>Vérifiez votre e-mail - {settings.app_name}</title>
         </head>
         <body>
-            <h1>Bonjour {username}!</h1>
+            <h1>Bonjour {firstname} {lastname}!</h1>
             <p>Bienvenue sur {settings.app_name}! Veuillez vérifier votre adresse e-mail.</p>
             <p><a href="{verification_url}">Vérifier l'adresse e-mail</a></p>
             <p>Si le lien ne fonctionne pas, copiez et collez ceci dans votre navigateur : {verification_url}</p>
@@ -366,7 +373,7 @@ class EmailService:
         """
     
     @staticmethod
-    def _get_default_password_reset_template(username: str, reset_url: str) -> str:
+    def _get_default_password_reset_template(firstname: str, lastname: str, reset_url: str) -> str:
         """Fallback password reset template if external template fails"""
         return f"""
         <!DOCTYPE html>
@@ -375,7 +382,7 @@ class EmailService:
             <title>Réinitialisez votre mot de passe - {settings.app_name}</title>
         </head>
         <body>
-            <h1>Bonjour {username}!</h1>
+            <h1>Bonjour {firstname} {lastname}!</h1>
             <p>Nous avons reçu une demande de réinitialisation de votre mot de passe pour votre compte {settings.app_name}.</p>
             <p><a href="{reset_url}">Réinitialiser le mot de passe</a></p>
             <p>Si le lien ne fonctionne pas, copiez et collez ceci dans votre navigateur : {reset_url}</p>
@@ -390,20 +397,128 @@ class EmailService:
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Bienvenue sur {settings.app_name} - Vos identifiants de connexion</title>
+            <title>Welcome to {settings.app_name} - Your Login Credentials</title>
         </head>
         <body>
-            <h1>Bienvenue {username}!</h1>
-            <p>Votre compte sur {settings.app_name} a été créé avec succès.</p>
-            <h2>Vos identifiants de connexion :</h2>
-            <p><strong>Nom d'utilisateur:</strong> {username}</p>
-            <p><strong>Adresse e-mail:</strong> {email}</p>
-            <p><strong>Mot de passe:</strong> {password}</p>
-            <p><a href="{login_url}">Se connecter maintenant</a></p>
-            <p><strong>Important:</strong> Conservez ces informations en lieu sûr et ne les partagez avec personne.</p>
+            <h1>Welcome {username}!</h1>
+            <p>Your account on {settings.app_name} has been created successfully.</p>
+            <h2>Your Login Credentials:</h2>
+            <p><strong>Username:</strong> {username}</p>
+            <p><strong>Email:</strong> {email}</p>
+            <p><strong>Password:</strong> {password}</p>
+            <p><a href="{login_url}">Login Now</a></p>
+            <p><strong>Important:</strong> Keep these credentials safe and don't share them with anyone.</p>
         </body>
         </html>
         """
+    
+    @staticmethod
+    async def send_password_changed(
+        to_email: str,
+        username: str,
+        change_date: str,
+        change_time: str,
+        ip_address: str,
+        device_info: str,
+        user_id: str
+    ) -> bool:
+        """Send password changed notification email"""
+        try:
+            subject = "Mot de passe modifié avec succès"
+            
+            html_content = EmailService._get_password_changed_template(
+                username=username,
+                change_date=change_date,
+                change_time=change_time,
+                ip_address=ip_address,
+                device_info=device_info
+            )
+            
+            message = MessageSchema(
+                subject=subject,
+                recipients=[to_email],
+                body=html_content,
+                subtype=MessageType.html
+            )
+            
+            await fastmail.send_message(message)
+            logger.info("Password changed email sent successfully", user_id=user_id, email=to_email)
+            return True
+            
+        except Exception as e:
+            logger.error("Failed to send password changed email", user_id=user_id, email=to_email, error=str(e))
+            return False
+    
+    @staticmethod
+    def _get_password_changed_template(username: str, change_date: str, change_time: str, ip_address: str, device_info: str) -> str:
+        """Get password changed email template"""
+        try:
+            template = jinja_env.get_template("password_changed.html")
+            return template.render(
+                username=username,
+                change_date=change_date,
+                change_time=change_time,
+                ip_address=ip_address,
+                device_info=device_info,
+                app_name=settings.app_name
+            )
+        except Exception as e:
+            logger.warning("Failed to render password changed template, using default", error=str(e))
+            return f"<h1>Password Changed</h1><p>Hello {username}, your password has been changed on {change_date} at {change_time}.</p>"
+    
+    @staticmethod
+    async def send_account_locked(
+        to_email: str,
+        username: str,
+        lock_reason: str,
+        unlock_time: str,
+        failed_attempts: int,
+        support_url: str,
+        user_id: str
+    ) -> bool:
+        """Send account locked notification email"""
+        try:
+            subject = "Alerte de sécurité du compte - Compte verrouillé"
+            
+            html_content = EmailService._get_account_locked_template(
+                username=username,
+                lock_reason=lock_reason,
+                unlock_time=unlock_time,
+                failed_attempts=failed_attempts,
+                support_url=support_url
+            )
+            
+            message = MessageSchema(
+                subject=subject,
+                recipients=[to_email],
+                body=html_content,
+                subtype=MessageType.html
+            )
+            
+            await fastmail.send_message(message)
+            logger.info("Account locked email sent successfully", user_id=user_id, email=to_email)
+            return True
+            
+        except Exception as e:
+            logger.error("Failed to send account locked email", user_id=user_id, email=to_email, error=str(e))
+            return False
+    
+    @staticmethod
+    def _get_account_locked_template(username: str, lock_reason: str, unlock_time: str, failed_attempts: int, support_url: str) -> str:
+        """Get account locked email template"""
+        try:
+            template = jinja_env.get_template("account_locked.html")
+            return template.render(
+                username=username,
+                lock_reason=lock_reason,
+                unlock_time=unlock_time,
+                failed_attempts=failed_attempts,
+                support_url=support_url,
+                app_name=settings.app_name
+            )
+        except Exception as e:
+            logger.warning("Failed to render account locked template, using default", error=str(e))
+            return f"<h1>Compte verrouillé</h1><p>Bonjour {username}, votre compte a été verrouillé en raison de: {lock_reason}</p>"
 
 
 # Convenience functions for easy access
@@ -435,6 +550,87 @@ async def send_welcome_email(
 ) -> bool:
     """Send welcome email with user credentials"""
     return await EmailService.send_welcome_email(to_email, username, password, user_id)
+
+
+async def send_password_changed(
+    to_email: str,
+    username: str,
+    change_date: str,
+    change_time: str,
+    ip_address: str,
+    device_info: str,
+    user_id: str
+) -> bool:
+    """Send password changed notification email"""
+    return await EmailService.send_password_changed(to_email, username, change_date, change_time, ip_address, device_info, user_id)
+
+
+async def send_account_locked(
+    to_email: str,
+    username: str,
+    lock_reason: str,
+    unlock_time: str,
+    failed_attempts: int,
+    support_url: str,
+    user_id: str
+) -> bool:
+    """Send account locked notification email"""
+    return await EmailService.send_account_locked(to_email, username, lock_reason, unlock_time, failed_attempts, support_url, user_id)
+
+
+async def send_login_alert(
+    to_email: str,
+    username: str,
+    login_time: str,
+    ip_address: str,
+    location: str,
+    device_info: str,
+    browser_info: str,
+    security_url: str,
+    user_id: str
+) -> bool:
+    """Send new login alert email"""
+    return await EmailService.send_login_alert(to_email, username, login_time, ip_address, location, device_info, browser_info, security_url, user_id)
+
+
+async def send_email_changed(
+    to_email: str,
+    username: str,
+    old_email: str,
+    new_email: str,
+    change_date: str,
+    ip_address: str,
+    user_id: str
+) -> bool:
+    """Send email changed notification"""
+    return await EmailService.send_email_changed(to_email, username, old_email, new_email, change_date, ip_address, user_id)
+
+
+async def send_account_deactivated(
+    to_email: str,
+    username: str,
+    deactivation_date: str,
+    deactivation_reason: str,
+    deactivated_by: str,
+    support_url: str,
+    user_id: str
+) -> bool:
+    """Send account deactivated notification"""
+    return await EmailService.send_account_deactivated(to_email, username, deactivation_date, deactivation_reason, deactivated_by, support_url, user_id)
+
+
+async def send_token_expiring(
+    to_email: str,
+    username: str,
+    token_type: str,
+    expires_in: str,
+    expiry_date: str,
+    service_name: str,
+    refresh_url: str,
+    user_id: str
+) -> bool:
+    """Send token expiring warning email"""
+    return await EmailService.send_token_expiring(to_email, username, token_type, expires_in, expiry_date, service_name, refresh_url, user_id)
 
 
  

@@ -48,17 +48,21 @@
             <div class="tagline">Service d'authentification sécurisé</div>
         </div>
         <div class="content">
-            <div class="greeting">Bienvenue {{ username }}!</div>
+            <div class="greeting">Bienvenue {{ firstname }} {{ lastname }}!</div>
             <div class="message">
                 Félicitations! Votre compte sur <strong>{{ app_name }}</strong> a été créé avec succès. 
                 Voici vos identifiants de connexion pour accéder à votre compte.
             </div>
             
             <div class="credentials-container">
-                <div class="credentials-title">🔐 Vos identifiants de connexion</div>
+                <div class="credentials-title">Vos identifiants de connexion</div>
                 <div class="credential-row">
-                    <span class="credential-label">Nom d'utilisateur:</span>
-                    <span class="credential-value">{{ username }}</span>
+                    <span class="credential-label">Prénom:</span>
+                    <span class="credential-value">{{ firstname }}</span>
+                </div>
+                <div class="credential-row">
+                    <span class="credential-label">Nom:</span>
+                    <span class="credential-value">{{ lastname }}</span>
                 </div>
                 <div class="credential-row">
                     <span class="credential-label">Adresse e-mail:</span>
