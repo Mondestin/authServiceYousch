@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script for authGhost API
+Setup script for AuthGhost API
 Runs database migrations and seeds initial data
 """
 
@@ -47,7 +47,7 @@ def run_migrations():
 def main():
     """Main setup function"""
     try:
-        logger.info("Starting authGhost API setup...")
+        logger.info("Starting AuthGhost API setup...")
         
         # Step 1: Run database migrations
         logger.info("Step 1: Running database migrations...")

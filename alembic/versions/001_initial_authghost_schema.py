@@ -1,4 +1,4 @@
-"""Initial authGhost schema
+"""Initial AuthGhost schema
 
 Revision ID: 001_initial_authghost_schema
 Revises: 
@@ -17,7 +17,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    """Create initial authGhost schema tables"""
+    """Create initial AuthGhost schema tables"""
     
     # ==========================
     # 1. Organizations Table
@@ -163,7 +163,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Drop all authGhost schema tables"""
+    """Drop all AuthGhost schema tables"""
     
     # Drop tables in reverse order to handle foreign key constraints
     op.drop_table('revoked_tokens')

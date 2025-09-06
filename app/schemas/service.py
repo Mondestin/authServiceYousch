@@ -1,5 +1,5 @@
 """
-Service schemas for authGhost API
+Service schemas for AuthGhost API
 """
 
 from datetime import datetime

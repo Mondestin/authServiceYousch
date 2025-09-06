@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI):
     """
     # Startup
     logger = get_logger(__name__)
-    logger.info("Starting authGhost API", version="1.0.0")
+    logger.info("Starting AuthGhost API", version="1.0.0")
     
     try:
         # Setup logging
@@ -49,22 +49,22 @@ async def lifespan(app: FastAPI):
         else:
             logger.error("Database connection test failed")
         
-        logger.info("authGhost API started successfully")
+        logger.info("AuthGhost API started successfully")
         
     except Exception as e:
-        logger.error("Failed to start authGhost API", error=str(e))
+        logger.error("Failed to start AuthGhost API", error=str(e))
         raise
     
     yield
     
     # Shutdown
-    logger.info("Shutting down authGhost API")
+    logger.info("Shutting down AuthGhost API")
     try:
         # Close database connections
         close_database_connection(engine)
         logger.info("Database connections closed")
         
-        logger.info("authGhost API shutdown completed")
+        logger.info("AuthGhost API shutdown completed")
         
     except Exception as e:
         logger.error("Error during shutdown", error=str(e))
@@ -72,9 +72,9 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI application
 app = FastAPI(
-    title="authGhost API",
+    title="AuthGhost API",
     description="""
-    authGhost is Phoenone's centralized authentication and access management API, designed for developers
+    AuthGhost is Phoenone's centralized authentication and access management API, designed for developers
     building multi-service applications. It provides a secure and consistent way to handle:
 
     - User authentication and service-specific JWT token issuance.
@@ -83,7 +83,7 @@ app = FastAPI(
     - Multi-tenant support for SaaS platforms.
     - Token refresh and optional revocation for secure session management.
 
-    Developers can integrate authGhost with Laravel, Symfony, SpringBoot, ExpressJS, or any other 
+    Developers can integrate AuthGhost with Laravel, Symfony, SpringBoot, ExpressJS, or any other 
     microservices, ensuring that authentication, authorization, and subscription checks are consistent 
     across all products. It is optimized for stateless JWT validation but also supports token introspection 
     for revocable access.

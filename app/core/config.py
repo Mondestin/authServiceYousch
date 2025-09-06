@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # Application Settings
-    app_name: str = Field(default="Yousch", env="APP_NAME")
+    app_name: str = Field(default="AuthGhost", env="APP_NAME")
     app_version: str = Field(default="1.0.0", env="APP_VERSION")
     debug: bool = Field(default=False, env="DEBUG")
     environment: str = Field(default="dev", env="ENVIRONMENT")
@@ -55,7 +55,7 @@ class Settings(BaseSettings):
     mail_encryption: str = Field(default="ssl", env="MAIL_ENCRYPTION")
     mail_use_tls: bool = Field(default=False, env="MAIL_USE_TLS")
     mail_use_ssl: bool = Field(default=True, env="MAIL_USE_SSL")
-    mail_from_name: str = Field(default="Yousch", env="MAIL_FROM_NAME")
+    mail_from_name: str = Field(default="AuthGhost", env="MAIL_FROM_NAME")
     mail_from_address: str = Field(default="noreply@fleetpay.phoenone.com", env="MAIL_FROM_ADDRESS")
     mail_verification_url: str = Field(default="http://localhost:3000/verify-email", env="MAIL_VERIFICATION_URL")
     mail_password_reset_url: str = Field(default="http://localhost:3000/reset-password", env="MAIL_PASSWORD_RESET_URL")

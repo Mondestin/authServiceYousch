@@ -1,5 +1,5 @@
 """
-Subscription tier schemas for authGhost API
+Subscription tier schemas for AuthGhost API
 """
 
 from datetime import datetime

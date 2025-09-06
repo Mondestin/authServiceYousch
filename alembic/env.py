@@ -1,5 +1,5 @@
 """
-Alembic environment configuration for authGhost API
+Alembic environment configuration for AuthGhost API
 Handles database migrations and schema management
 """
 

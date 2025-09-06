@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Local MySQL setup script for authGhost API
+Local MySQL setup script for AuthGhost API
 Helps set up the database and user for local development
 """
 
@@ -35,7 +35,7 @@ def check_mysql_connection():
     return True
 
 def create_database_and_user():
-    """Create database and user for authGhost API"""
+    """Create database and user for AuthGhost API"""
     print("\n[INFO] Setting up database and user...")
     
     # Get MySQL root password

@@ -1,5 +1,5 @@
 """
-Schemas package for authGhost API
+Schemas package for AuthGhost API
 """
 
 from .auth import (

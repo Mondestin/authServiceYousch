@@ -1,4 +1,4 @@
-"""Seed initial authGhost data
+"""Seed initial AuthGhost data
 
 Revision ID: 002_seed_initial_data
 Revises: 001_initial_authghost_schema
@@ -20,7 +20,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    """Seed initial data for authGhost"""
+    """Seed initial data for AuthGhost"""
     
     # Create table references for data insertion
     organizations_table = table('organizations',

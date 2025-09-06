@@ -1,6 +1,6 @@
-# authGhost API
+# AuthGhost API
 
-authGhost is Phoenone's centralized authentication and access management API, designed for developers building multi-service applications. Built with FastAPI, SQLAlchemy, and MySQL.
+AuthGhost is Phoenone's centralized authentication and access management API, designed for developers building multi-service applications. Built with FastAPI, SQLAlchemy, and MySQL.
 
 ## Features
 
@@ -16,7 +16,7 @@ authGhost is Phoenone's centralized authentication and access management API, de
 
 ## Description
 
-authGhost provides a secure and consistent way to handle:
+AuthGhost provides a secure and consistent way to handle:
 
 - **User authentication and service-specific JWT token issuance**
 - **Role-based access control (RBAC) across multiple services**
@@ -25,7 +25,7 @@ authGhost provides a secure and consistent way to handle:
 - **Token refresh and optional revocation for secure session management**
 - **Automated email notifications for user account activities**
 
-Developers can integrate authGhost with Laravel, Symfony, SpringBoot, ExpressJS, or any other microservices, ensuring that authentication, authorization, and subscription checks are consistent across all products. It is optimized for stateless JWT validation but also supports token introspection for revocable access.
+Developers can integrate AuthGhost with Laravel, Symfony, SpringBoot, ExpressJS, or any other microservices, ensuring that authentication, authorization, and subscription checks are consistent across all products. It is optimized for stateless JWT validation but also supports token introspection for revocable access.
 
 ## Tech Stack
 
@@ -163,7 +163,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 MAIL_USERNAME=your-email@example.com
 MAIL_PASSWORD=your-email-password
 MAIL_FROM=your-email@example.com
-MAIL_FROM_NAME=authGhost
+MAIL_FROM_NAME=AuthGhost
 MAIL_PORT=587
 MAIL_SERVER=smtp.gmail.com
 MAIL_STARTTLS=true

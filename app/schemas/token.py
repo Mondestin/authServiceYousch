@@ -1,5 +1,5 @@
 """
-Token schemas for authGhost API
+Token schemas for AuthGhost API
 """
 
 from datetime import datetime

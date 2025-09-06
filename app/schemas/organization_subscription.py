@@ -1,5 +1,5 @@
 """
-Organization subscription schemas for authGhost API
+Organization subscription schemas for AuthGhost API
 """
 
 from datetime import date, datetime
