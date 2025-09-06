@@ -25,7 +25,7 @@ def main():
         # Seed database with initial data
         seed_database()
         
-        logger.info("✅ Database seeded successfully!")
+        logger.info("Database seeded successfully!")
         logger.info("Initial data includes:")
         logger.info("- Default organization")
         logger.info("- Default service (auth-service)")

@@ -387,18 +387,18 @@ def init_database() -> None:
                 check=True
             )
             
-            logger.info("✅ Database migrations completed successfully!")
+            logger.info("Database migrations completed successfully!")
             logger.debug(f"Migration output: {result.stdout}")
             
             if result.stderr:
                 logger.warning(f"Migration warnings: {result.stderr}")
                 
         except subprocess.CalledProcessError as e:
-            logger.error(f"❌ Migration failed: {e}")
+            logger.error(f"Migration failed: {e}")
             logger.error(f"Error output: {e.stderr}")
             raise Exception(f"Database migration failed: {e.stderr}")
         except FileNotFoundError:
-            logger.error("❌ Alembic not found. Please ensure Alembic is installed and available in PATH")
+            logger.error("Alembic not found. Please ensure Alembic is installed and available in PATH")
             raise Exception("Alembic not found")
         finally:
             # Restore original working directory

@@ -33,15 +33,15 @@ def run_migrations():
             check=True
         )
         
-        logger.info("✅ Migrations completed successfully!")
+        logger.info("Migrations completed successfully!")
         return True
         
     except subprocess.CalledProcessError as e:
-        logger.error(f"❌ Migration failed: {e}")
+        logger.error(f"Migration failed: {e}")
         logger.error(f"Error output: {e.stderr}")
         return False
     except Exception as e:
-        logger.error(f"❌ Unexpected error during migration: {e}")
+        logger.error(f"Unexpected error during migration: {e}")
         return False
 
 def main():
@@ -55,7 +55,7 @@ def main():
             logger.error("Migration failed, aborting setup")
             sys.exit(1)
         
-        logger.info("🎉 Setup completed successfully!")
+        logger.info("Setup completed successfully!")
         logger.info("Initial data includes:")
         logger.info("- Default organization")
         logger.info("- Default service (auth-service)")
