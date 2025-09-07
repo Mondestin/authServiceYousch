@@ -80,8 +80,8 @@ class OrganizationDetails(BaseModel):
     """Organization details for user profile response"""
     id: int = Field(..., description="Organization ID")
     name: str = Field(..., description="Organization name")
-    description: Optional[str] = Field(None, description="Organization description")
-    is_active: bool = Field(..., description="Whether organization is active")
+    created_at: Optional[str] = Field(None, description="Organization creation date")
+    updated_at: Optional[str] = Field(None, description="Organization last update date")
     
     class Config:
         from_attributes = True

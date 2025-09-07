@@ -355,8 +355,8 @@ async def get_current_user_profile(
             organization_details = {
                 "id": organization.id,
                 "name": organization.name,
-                "description": organization.description,
-                "is_active": organization.is_active
+                "created_at": organization.created_at.isoformat() if organization.created_at else None,
+                "updated_at": organization.updated_at.isoformat() if organization.updated_at else None
             }
         
         logger.info("Retrieved user profile with full details", 
