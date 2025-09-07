@@ -104,10 +104,7 @@ class SubscriptionDetails(BaseModel):
 
 class UserProfileResponse(BaseModel):
     """Schema for user profile response with full details"""
-    user: Dict[str, Any] = Field(..., description="User information")
-    roles: List[RoleDetails] = Field(..., description="User roles with full details")
-    organization: Optional[OrganizationDetails] = Field(None, description="Organization information with full details")
-    subscriptions: List[SubscriptionDetails] = Field(..., description="Organization subscriptions with full details")
+    user: Dict[str, Any] = Field(..., description="User information including roles, organization, and subscriptions")
 
 
 class HealthCheck(BaseModel):

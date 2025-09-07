@@ -359,17 +359,20 @@ async def get_current_user_profile(
                 "updated_at": organization.updated_at.isoformat() if organization.updated_at else None
             }
         
+        # Prepare complete user data with all details
+        user_data = current_user.to_dict()
+        user_data.update({
+            "roles": roles,
+            "organization": organization_details,
+            "subscriptions": subscription_info
+        })
+        
         logger.info("Retrieved user profile with full details", 
                    user_id=current_user.id,
                    roles_count=len(roles),
                    subscriptions_count=len(subscription_info))
         
-        return UserProfileResponse(
-            user=current_user.to_dict(),
-            roles=roles,
-            organization=organization_details,
-            subscriptions=subscription_info
-        )
+        return UserProfileResponse(user=user_data)
         
     except Exception as e:
         logger.error("Failed to retrieve user profile", 
