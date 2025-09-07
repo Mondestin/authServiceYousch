@@ -51,10 +51,15 @@ async def health_check(db: Session = Depends(get_db)) -> Any:
         # Create health check response
         health_data = HealthCheck(
             status="healthy" if db_status == "healthy" else "degraded",
-            timestamp=datetime.now(),
+            timestamp=datetime.now().isoformat(),
             version=settings.app_version,
             environment=settings.environment,
-            database_status=db_status,
+            database={
+                "status": db_status,
+                "pool_size": db_info.get("pool_size", 0),
+                "checked_out": db_info.get("checked_out", 0),
+                "overflow": db_info.get("overflow", 0)
+            },
             uptime=uptime
         )
         
@@ -72,10 +77,15 @@ async def health_check(db: Session = Depends(get_db)) -> Any:
         # Return degraded status on error
         return HealthCheck(
             status="degraded",
-            timestamp=datetime.now(),
+            timestamp=datetime.now().isoformat(),
             version=settings.app_version,
             environment=settings.environment,
-            database_status="unknown",
+            database={
+                "status": "unknown",
+                "pool_size": 0,
+                "checked_out": 0,
+                "overflow": 0
+            },
             uptime=time.time() - START_TIME
         )
 

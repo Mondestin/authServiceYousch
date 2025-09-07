@@ -108,3 +108,13 @@ class UserProfileResponse(BaseModel):
     roles: List[RoleDetails] = Field(..., description="User roles with full details")
     organization: Optional[OrganizationDetails] = Field(None, description="Organization information with full details")
     subscriptions: List[SubscriptionDetails] = Field(..., description="Organization subscriptions with full details")
+
+
+class HealthCheck(BaseModel):
+    """Schema for health check response"""
+    status: str = Field(..., description="Service status")
+    timestamp: str = Field(..., description="Current timestamp")
+    uptime: float = Field(..., description="Service uptime in seconds")
+    version: str = Field(..., description="Service version")
+    database: Dict[str, Any] = Field(..., description="Database status")
+    environment: str = Field(..., description="Environment name")
