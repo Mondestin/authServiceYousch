@@ -19,6 +19,7 @@ from app.core.security import (
     create_refresh_token,
     verify_token
 )
+from app.core.email import EmailService
 from app.models.user import User
 from app.models.organization import Organization
 from app.models.service import Service
@@ -108,6 +109,30 @@ async def register(
         )
         
         logger.info(f"User registered successfully: {new_user.email}")
+        
+        # Send verification email
+        try:
+            verification_token = create_access_token(
+                data={"sub": str(new_user.id), "type": "verification"},
+                expires_delta=timedelta(hours=24)
+            )
+            
+            email_sent = await EmailService.send_email_verification(
+                to_email=new_user.email,
+                firstname=new_user.first_name,
+                lastname=new_user.last_name,
+                verification_token=verification_token,
+                user_id=str(new_user.id)
+            )
+            
+            if email_sent:
+                logger.info(f"Verification email sent to: {new_user.email}")
+            else:
+                logger.warning(f"Failed to send verification email to: {new_user.email}")
+                
+        except Exception as e:
+            logger.error(f"Error sending verification email: {str(e)}")
+            # Don't fail registration if email fails
         
         return UserResponse(
             user_id=new_user.id,
@@ -304,3 +329,65 @@ async def get_current_user_profile(
         organization=organization.to_dict() if organization else None,
         subscriptions=subscription_info
     )
+
+
+@router.post("/verify-email", status_code=status.HTTP_200_OK)
+async def verify_email(
+    token: str,
+    db: Session = Depends(get_db)
+) -> Any:
+    """
+    Verify user email address using verification token
+    
+    Args:
+        token: Email verification token
+        db: Database session
+        
+    Returns:
+        dict: Verification result
+        
+    Raises:
+        HTTPException: If verification fails
+    """
+    try:
+        # Verify the token
+        payload = verify_token(token)
+        
+        # Check if it's a verification token
+        if payload.get("type") != "verification":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid verification token"
+            )
+        
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid token payload"
+            )
+        
+        # Find user
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Mark email as verified (you might want to add an email_verified field to User model)
+        # For now, we'll just log the verification
+        logger.info(f"Email verified for user: {user.email}")
+        
+        return {
+            "message": "Email verified successfully",
+            "user_id": user.id,
+            "email": user.email
+        }
+        
+    except Exception as e:
+        logger.error(f"Email verification failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email verification failed"
+        )

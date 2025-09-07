@@ -6,76 +6,182 @@
     <title>Compte désactivé - {{ app_name }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #2c3e50; background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); padding: 40px 30px; text-align: center; color: white; }
-        .header h1 { font-size: 2.5em; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .header .tagline { font-size: 1.1em; opacity: 0.9; font-weight: 300; }
-        .content { padding: 40px 30px; }
-        .greeting { font-size: 1.4em; color: #2c3e50; margin-bottom: 20px; font-weight: 600; }
-        .message { font-size: 1.1em; color: #34495e; margin-bottom: 30px; line-height: 1.7; }
-        .deactivate-icon { text-align: center; font-size: 4em; margin: 20px 0; color: #95a5a6; }
-        .info-box { background: #d1ecf1; border: 1px solid #bee5eb; padding: 20px; border-radius: 12px; margin: 25px 0; }
-        .info-box strong { color: #0c5460; }
-        .warning { background: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 12px; margin: 25px 0; }
-        .warning strong { color: #721c24; }
-        .button-container { text-align: center; margin: 35px 0; }
-        .button { display: inline-block; padding: 18px 36px; background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%); color: white; text-decoration: none; border-radius: 50px; font-size: 1.1em; font-weight: 600; box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4); transition: all 0.3s ease; }
-        .button:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(149, 165, 166, 0.6); }
-        .footer { text-align: center; padding: 30px; background: #f8f9fa; color: #7f8c8d; font-size: 0.9em; }
-        .footer p { margin-bottom: 8px; }
-        .social-links { margin-top: 20px; }
-        .social-links a { display: inline-block; margin: 0 10px; color: #95a5a6; text-decoration: none; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            line-height: 1.6; 
+            color: #000000; 
+            background-color: #f5f5f5; 
+            padding: 20px; 
+        }
+        .email-container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            overflow: hidden; 
+        }
+        .content { 
+            padding: 60px 40px; 
+            text-align: center; 
+        }
+        .icon { 
+            width: 60px; 
+            height: 60px; 
+            background-color: #000000; 
+            border-radius: 8px; 
+            margin: 0 auto 30px auto; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 30px; 
+        }
+        .main-heading { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #000000; 
+            margin-bottom: 20px; 
+            line-height: 1.2; 
+        }
+        .instructions { 
+            font-size: 16px; 
+            color: #000000; 
+            margin-bottom: 40px; 
+            line-height: 1.5; 
+        }
+        .info-box { 
+            background-color: #f8f9fa; 
+            border: 2px solid #000000; 
+            border-radius: 8px; 
+            padding: 30px; 
+            margin: 30px 0; 
+            text-align: left; 
+        }
+        .info-item { 
+            margin-bottom: 15px; 
+            font-size: 16px; 
+        }
+        .info-label { 
+            font-weight: 600; 
+            color: #000000; 
+            display: inline-block; 
+            width: 150px; 
+        }
+        .info-value { 
+            color: #000000; 
+        }
+        .button-container { 
+            margin: 40px 0; 
+        }
+        .support-button { 
+            display: inline-block; 
+            padding: 16px 32px; 
+            background-color: #000000; 
+            color: #ffffff; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            transition: background-color 0.2s ease; 
+        }
+        .support-button:hover { 
+            background-color: #333333; 
+            color: #ffffff; 
+        }
+        .warning { 
+            background: #f8f9fa; 
+            border: 2px solid #000000; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin: 25px 0; 
+            font-size: 14px; 
+            color: #000000; 
+        }
+        .footer-info { 
+            font-size: 14px; 
+            color: #000000; 
+            margin-top: 40px; 
+            line-height: 1.5; 
+        }
+        .promotional { 
+            background-color: #f8f9fa; 
+            padding: 20px; 
+            margin-top: 30px; 
+            border-radius: 8px; 
+            font-size: 12px; 
+            color: #6c757d; 
+            line-height: 1.4; 
+        }
         @media (max-width: 600px) {
-            .container { margin: 10px; border-radius: 15px; }
-            .header { padding: 30px 20px; }
-            .header h1 { font-size: 2em; }
-            .content { padding: 30px 20px; }
-            .button { padding: 16px 28px; font-size: 1em; }
+            .content { padding: 40px 20px; }
+            .main-heading { font-size: 24px; }
+            .instructions { font-size: 14px; }
+            .support-button { padding: 14px 28px; font-size: 14px; }
+            .info-box { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>{{ app_name }}</h1>
-            <div class="tagline">Service d'authentification sécurisé</div>
-        </div>
+    <div class="email-container">
         <div class="content">
-            <div class="greeting">Bonjour {{ firstname }} {{ lastname }}!</div>
-            <div class="deactivate-icon">X</div>
-            <div class="message">
-                Votre compte a été désactivé sur <strong>{{ app_name }}</strong>. Vous ne pourrez plus accéder à nos services.
+            <!-- Icon -->
+            <div class="icon">
+                <span style="color: #ffffff; font-size: 30px;">X</span>
             </div>
             
+            <!-- Main Heading -->
+            <h1 class="main-heading">Compte désactivé</h1>
+            
+            <!-- Instructions -->
+            <p class="instructions">
+                Bonjour {{ firstname }} {{ lastname }},<br><br>
+                Votre compte {{ app_name }} a été désactivé. Voici les détails de cette action :
+            </p>
+            
+            <!-- Info Box -->
             <div class="info-box">
-                <strong>Détails du compte :</strong><br>
-                • Désactivé le : {{ deactivation_date }}<br>
-                • Raison : {{ deactivation_reason }}<br>
-                • Désactivé par : {{ deactivated_by }}<br>
-                • Statut du compte : Inactif
+                <div class="info-item">
+                    <span class="info-label">Date :</span>
+                    <span class="info-value">{{ deactivation_date }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Raison :</span>
+                    <span class="info-value">{{ deactivation_reason }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Désactivé par :</span>
+                    <span class="info-value">{{ deactivated_by }}</span>
+                </div>
             </div>
             
-            <div class="warning">
-                <strong>Informations importantes :</strong><br>
-                • Toutes les sessions actives ont été terminées<br>
-                • Vous ne pouvez pas vous connecter avec ce compte<br>
-                • Toutes les données associées à ce compte seront conservées selon notre politique de rétention des données<br>
-                • Si vous pensez que cela a été fait par erreur, veuillez contacter le support immédiatement
-            </div>
-            
+            <!-- Support Button -->
             <div class="button-container">
-                <a href="{{ support_url }}" class="button">Contacter le support</a>
+                <a href="{{ support_url }}" class="support-button">
+                    Contacter le support technique
+                </a>
             </div>
-        </div>
-        <div class="footer">
-            <p><strong>{{ app_name }}</strong> - Service d'authentification sécurisé</p>
-            <p>Ceci est un e-mail automatisé, veuillez ne pas répondre directement à ce message.</p>
-            <p>Pour obtenir de l'aide, veuillez contacter notre équipe de service client.</p>
-            <div class="social-links">
-                <a href="#">Site web</a> • <a href="#">Support</a> • <a href="#">Politique de confidentialité</a>
+            
+            <!-- Warning -->
+            <div class="warning">
+                <strong>Information importante :</strong> Votre compte est maintenant désactivé et vous ne pouvez plus 
+                vous connecter. Si vous pensez qu'il s'agit d'une erreur, veuillez contacter notre équipe de support 
+                technique à l'adresse support@{{ app_name }}.com.
             </div>
-            <p style="margin-top: 20px; font-size: 0.8em; color: #95a5a6;">&copy; 2024 {{ app_name }}. Tous droits réservés.</p>
+            
+            <!-- Footer Info -->
+            <div class="footer-info">
+                <p>
+                    Pour toute question concernant cette action ou pour réactiver votre compte, 
+                    veuillez contacter notre équipe de support technique.
+                </p>
+            </div>
+            
+            <!-- Promotional Section -->
+            <div class="promotional">
+                <p>
+                    {{ app_name }} - Solution d'authentification sécurisée pour les entreprises modernes.
+                </p>
+            </div>
         </div>
     </div>
 </body>
