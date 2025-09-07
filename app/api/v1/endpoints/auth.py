@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from typing import Any, List
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.api.deps import get_db, get_current_user
 from app.core.config import get_settings
@@ -283,52 +283,102 @@ async def get_current_user_profile(
     db: Session = Depends(get_db)
 ) -> Any:
     """
-    Get current user profile with roles and organization info
+    Get current user profile with full details for roles, organization, and subscriptions
     
     Args:
         current_user: Current authenticated user
         db: Database session
         
     Returns:
-        UserProfileResponse: User profile with roles and organization info
+        UserProfileResponse: User profile with full details
     """
-    # Get user's organization
-    organization = db.query(Organization).filter(Organization.id == current_user.org_id).first()
-    
-    # Get user's roles
-    user_roles = db.query(UserRole).filter(UserRole.user_id == current_user.id).all()
-    roles = []
-    for user_role in user_roles:
-        role = db.query(Role).filter(Role.id == user_role.role_id).first()
-        if role:
-            roles.append({
-                "id": role.id,
-                "name": role.name,
-                "service_id": role.service_id,
-                "permissions": role.permissions
+    try:
+        # Get user's organization with full details
+        organization = db.query(Organization).filter(Organization.id == current_user.org_id).first()
+        
+        # Get user's roles with service details
+        user_roles = db.query(UserRole).filter(UserRole.user_id == current_user.id).all()
+        roles = []
+        for user_role in user_roles:
+            role = db.query(Role).options(
+                joinedload(Role.service)
+            ).filter(Role.id == user_role.role_id).first()
+            if role:
+                roles.append({
+                    "id": role.id,
+                    "name": role.name,
+                    "service_id": role.service_id,
+                    "permissions": role.permissions,
+                    "service": {
+                        "id": role.service.id,
+                        "name": role.service.name,
+                        "description": role.service.description,
+                        "status": role.service.status
+                    }
+                })
+        
+        # Get organization subscriptions with full service and tier details
+        subscriptions = db.query(OrganizationSubscription).options(
+            joinedload(OrganizationSubscription.service),
+            joinedload(OrganizationSubscription.tier)
+        ).filter(
+            OrganizationSubscription.org_id == current_user.org_id,
+            OrganizationSubscription.is_active == True
+        ).all()
+        
+        subscription_info = []
+        for sub in subscriptions:
+            subscription_info.append({
+                "id": sub.id,
+                "service_id": sub.service_id,
+                "tier_id": sub.tier_id,
+                "start_date": sub.start_date.isoformat() if sub.start_date else None,
+                "end_date": sub.end_date.isoformat() if sub.end_date else None,
+                "is_active": sub.is_active,
+                "service": {
+                    "id": sub.service.id,
+                    "name": sub.service.name,
+                    "description": sub.service.description,
+                    "status": sub.service.status
+                },
+                "tier": {
+                    "id": sub.tier.id,
+                    "service_id": sub.tier.service_id,
+                    "tier_name": sub.tier.tier_name,
+                    "features": sub.tier.features
+                }
             })
-    
-    # Get organization subscriptions
-    subscriptions = db.query(OrganizationSubscription).filter(
-        OrganizationSubscription.org_id == current_user.org_id,
-        OrganizationSubscription.is_active == True
-    ).all()
-    
-    subscription_info = []
-    for sub in subscriptions:
-        subscription_info.append({
-            "service_id": sub.service_id,
-            "tier_id": sub.tier_id,
-            "start_date": sub.start_date,
-            "end_date": sub.end_date
-        })
-    
-    return UserProfileResponse(
-        user=current_user.to_dict(),
-        roles=roles,
-        organization=organization.to_dict() if organization else None,
-        subscriptions=subscription_info
-    )
+        
+        # Prepare organization details
+        organization_details = None
+        if organization:
+            organization_details = {
+                "id": organization.id,
+                "name": organization.name,
+                "description": organization.description,
+                "is_active": organization.is_active
+            }
+        
+        logger.info("Retrieved user profile with full details", 
+                   user_id=current_user.id,
+                   roles_count=len(roles),
+                   subscriptions_count=len(subscription_info))
+        
+        return UserProfileResponse(
+            user=current_user.to_dict(),
+            roles=roles,
+            organization=organization_details,
+            subscriptions=subscription_info
+        )
+        
+    except Exception as e:
+        logger.error("Failed to retrieve user profile", 
+                    error=str(e),
+                    user_id=current_user.id)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve user profile"
+        )
 
 
 @router.post("/verify-email", status_code=status.HTTP_200_OK)

@@ -42,19 +42,69 @@ class RefreshTokenRequest(BaseModel):
     refresh_token: str = Field(..., description="Refresh token")
 
 
+class ServiceDetails(BaseModel):
+    """Service details for user profile response"""
+    id: int = Field(..., description="Service ID")
+    name: str = Field(..., description="Service name")
+    description: Optional[str] = Field(None, description="Service description")
+    status: str = Field(..., description="Service status")
+    
+    class Config:
+        from_attributes = True
+
+
+class SubscriptionTierDetails(BaseModel):
+    """Subscription tier details for user profile response"""
+    id: int = Field(..., description="Subscription tier ID")
+    service_id: int = Field(..., description="Service ID")
+    tier_name: str = Field(..., description="Tier name")
+    features: dict = Field(..., description="Tier features")
+    
+    class Config:
+        from_attributes = True
+
+
+class RoleDetails(BaseModel):
+    """Role details for user profile response"""
+    id: int = Field(..., description="Role ID")
+    name: str = Field(..., description="Role name")
+    service_id: int = Field(..., description="Service ID")
+    permissions: dict = Field(..., description="Role permissions")
+    service: ServiceDetails = Field(..., description="Service details")
+    
+    class Config:
+        from_attributes = True
+
+
+class OrganizationDetails(BaseModel):
+    """Organization details for user profile response"""
+    id: int = Field(..., description="Organization ID")
+    name: str = Field(..., description="Organization name")
+    description: Optional[str] = Field(None, description="Organization description")
+    is_active: bool = Field(..., description="Whether organization is active")
+    
+    class Config:
+        from_attributes = True
+
+
+class SubscriptionDetails(BaseModel):
+    """Subscription details for user profile response"""
+    id: int = Field(..., description="Subscription ID")
+    service_id: int = Field(..., description="Service ID")
+    tier_id: int = Field(..., description="Tier ID")
+    start_date: str = Field(..., description="Subscription start date")
+    end_date: str = Field(..., description="Subscription end date")
+    is_active: bool = Field(..., description="Whether subscription is active")
+    service: ServiceDetails = Field(..., description="Service details")
+    tier: SubscriptionTierDetails = Field(..., description="Tier details")
+    
+    class Config:
+        from_attributes = True
+
+
 class UserProfileResponse(BaseModel):
-    """Schema for user profile response with roles and organization info"""
+    """Schema for user profile response with full details"""
     user: Dict[str, Any] = Field(..., description="User information")
-    roles: List[Dict[str, Any]] = Field(..., description="User roles")
-    organization: Optional[Dict[str, Any]] = Field(None, description="Organization information")
-    subscriptions: List[Dict[str, Any]] = Field(..., description="Organization subscriptions")
-
-
-class HealthCheck(BaseModel):
-    """Schema for health check response"""
-    status: str = Field(..., description="Overall service status")
-    timestamp: datetime = Field(..., description="Health check timestamp")
-    version: str = Field(..., description="Application version")
-    environment: str = Field(..., description="Environment name")
-    database_status: str = Field(..., description="Database connection status")
-    uptime: float = Field(..., description="Service uptime in seconds")
+    roles: List[RoleDetails] = Field(..., description="User roles with full details")
+    organization: Optional[OrganizationDetails] = Field(None, description="Organization information with full details")
+    subscriptions: List[SubscriptionDetails] = Field(..., description="Organization subscriptions with full details")

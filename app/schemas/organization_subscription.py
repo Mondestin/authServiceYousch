@@ -7,6 +7,28 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
+class ServiceDetails(BaseModel):
+    """Service details for organization subscription response"""
+    id: int = Field(..., description="Service ID")
+    name: str = Field(..., description="Service name")
+    description: Optional[str] = Field(None, description="Service description")
+    status: str = Field(..., description="Service status")
+    
+    class Config:
+        from_attributes = True
+
+
+class SubscriptionTierDetails(BaseModel):
+    """Subscription tier details for organization subscription response"""
+    id: int = Field(..., description="Subscription tier ID")
+    service_id: int = Field(..., description="Service ID")
+    tier_name: str = Field(..., description="Tier name")
+    features: dict = Field(..., description="Tier features")
+    
+    class Config:
+        from_attributes = True
+
+
 class OrganizationSubscriptionBase(BaseModel):
     """Base organization subscription schema"""
     org_id: int = Field(..., description="Organization ID")
@@ -31,9 +53,11 @@ class OrganizationSubscriptionUpdate(BaseModel):
 
 
 class OrganizationSubscriptionResponse(OrganizationSubscriptionBase):
-    """Schema for organization subscription response"""
+    """Schema for organization subscription response with full details"""
     id: int = Field(..., description="Organization subscription ID")
     created_at: datetime = Field(..., description="Creation timestamp")
+    service: ServiceDetails = Field(..., description="Service details")
+    tier: SubscriptionTierDetails = Field(..., description="Subscription tier details")
     
     class Config:
         from_attributes = True
